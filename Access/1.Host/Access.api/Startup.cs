@@ -2,10 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Access.domain.Commands;
+using Access.domain.Commands.Handlers;
+using Access.domain.Interfaces;
+using Access.domain.Queries.Handlers;
+using Access.domain.Services;
+using Access.infra.Database.Context;
+using Access.infra.Database.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,18 +31,22 @@ namespace Access.api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Access.api", Version = "v1" });
             });
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICommandHandler, RegisterHandler>();
+            services.AddScoped<IQueryHandler, LoginHandler>();
+            services.AddScoped<ITokenService, TokenService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
