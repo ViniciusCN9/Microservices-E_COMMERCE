@@ -25,6 +25,7 @@ namespace Access.infra.Database.Repository
             {
                 user = null;
             }
+
             return user;
         }
 
