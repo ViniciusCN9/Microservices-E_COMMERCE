@@ -11,6 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Order.domain.Handlers;
+using Order.domain.Interfaces;
+using Order.domain.Repositories;
+using Order.infra.Database.Context;
+using Order.infra.Database.Repositories;
+using Order.infra.Interfaces;
 
 namespace Order.api
 {
@@ -32,6 +38,10 @@ namespace Order.api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order.api", Version = "v1" });
             });
+
+            services.AddScoped<IOrderContext, ApplicationDbContext>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IHandler, Handler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

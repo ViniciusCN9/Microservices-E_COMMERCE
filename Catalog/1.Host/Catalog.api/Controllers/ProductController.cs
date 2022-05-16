@@ -51,7 +51,7 @@ namespace Catalog.api.Controllers
             }
         }
 
-        [HttpPost("Product")]
+        [HttpPost("Create")]
         public IActionResult CreateProduct([FromBody] CreateProductRequest request)
         {
             try
