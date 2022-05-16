@@ -1,0 +1,40 @@
+version: '3.8'
+
+volumes:
+  catalogDb:
+
+
+networks:
+  mysqlNET:
+  catalogNET:
+
+
+services:
+  mysql:
+    image: "mysql:8.0"
+    container_name: MySql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    networks:
+      - mysqlNET
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - catalogDb:/var/lib/mysql
+    ports:
+      - "8080:8080"
+
+  access:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Catalog
+    ports:
+      - 9002:80
+    networks:
+      - mysqlNET
+      - catalogNET
+    environment:
+      - DBHOST=mysql
+    depends_on:
+      - mysql
