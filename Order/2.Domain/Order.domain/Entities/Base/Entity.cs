@@ -5,7 +5,13 @@ namespace Order.domain.Entities.Base
 {
     public abstract class Entity
     {
+        public Entity(long id)
+        {
+            Id = id;
+        }
+
         [BsonId]
-        public ObjectId Id { get; private set; }
+        public ObjectId InternalId { get; private set; }
+        public long Id { get; private set; }
     }
 }

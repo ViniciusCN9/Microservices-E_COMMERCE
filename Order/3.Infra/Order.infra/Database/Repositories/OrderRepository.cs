@@ -15,15 +15,22 @@ namespace Order.infra.Database.Repositories
             _context = context;
         }
 
-        public Requirement GetOrder(ObjectId id)
+        public Requirement GetOrder(int id)
         {
             return _context.Orders.Find(e => e.Id == id).FirstOrDefault();
         }
 
         public void CreateOrder(Requirement requirement)
         {
-            _context.Orders.InsertOne(requirement);
+            _context.Orders.InsertOneAsync(requirement);
         }
 
+        public long GetNextId()
+        {
+            var countDocuments = _context.Orders.CountDocuments(new BsonDocument());
+            if (countDocuments == 0)
+                return 1;
+            return countDocuments + 1;
+        }
     }
 }

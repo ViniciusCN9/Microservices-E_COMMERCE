@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Order.domain.Handlers;
 using Order.domain.Interfaces;
 using Order.domain.Repositories;
+using Order.infra.Database.Config;
 using Order.infra.Database.Context;
 using Order.infra.Database.Repositories;
 using Order.infra.Interfaces;
@@ -32,15 +33,17 @@ namespace Order.api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order.api", Version = "v1" });
             });
 
-            services.AddScoped<IOrderContext, ApplicationDbContext>();
-            services.AddScoped<IOrderRepository, OrderRepository>();
+            var config = new ServerConfig();
+            Configuration.Bind(config);
+            var context = new ApplicationDbContext(config.MongoDB);
+            var repository = new OrderRepository(context);
+            services.AddSingleton<IOrderRepository>(repository);
             services.AddScoped<IHandler, Handler>();
         }
 
@@ -53,8 +56,6 @@ namespace Order.api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order.api v1"));
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

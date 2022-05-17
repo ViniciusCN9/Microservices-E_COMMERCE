@@ -8,7 +8,7 @@ namespace Order.domain.Entities
 {
     public class Requirement : Entity
     {
-        public Requirement(string username)
+        public Requirement(string username, long id) : base(id)
         {
             Username = username;
             TotalValue = 0m;
@@ -16,7 +16,6 @@ namespace Order.domain.Entities
             ExpeditionDate = DateTime.Now;
         }
 
-        [BsonElement("Username")]
         public string Username { get; private set; }
         public decimal TotalValue { get; private set; }
         public List<Product> Products { get; private set; }

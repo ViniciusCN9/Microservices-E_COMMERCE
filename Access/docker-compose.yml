@@ -5,36 +5,41 @@ volumes:
 
 
 networks:
-  mysqlNET:
+  accessDbNET:
   accessNET:
 
 
 services:
-  mysql:
+  database:
     image: "mysql:8.0"
-    container_name: MySql
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    networks:
-      - mysqlNET
-    environment:
-      MYSQL_ROOT_PASSWORD: root
+    container_name: access_database
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
     volumes:
       - accessDb:/var/lib/mysql
-    ports:
-      - "8080:8080"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+    networks:
+      - accessDbNET
 
   access:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: Access
+    container_name: access_service
     ports:
-      - 9001:80
+      - 5000:80
     networks:
-      - mysqlNET
+      - accessDbNET
       - accessNET
+    restart: always
     environment:
       - DBHOST=mysql
+      - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - mysql
+      - database

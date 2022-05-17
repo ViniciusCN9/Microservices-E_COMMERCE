@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using MongoDB.Bson;
 using Order.domain.Commands;
 using Order.domain.Entities;
 using Order.domain.Interfaces;
@@ -24,7 +23,8 @@ namespace Order.domain.Handlers
                 throw new Exception("Usuário inválido");
 
             //Gera entidade
-            var order = new Requirement(request.Username);
+            var id = _orderRepository.GetNextId();
+            var order = new Requirement(request.Username, id);
 
             //Salva informação
             _orderRepository.CreateOrder(order);
@@ -43,8 +43,7 @@ namespace Order.domain.Handlers
             var product = new Product(request.ProductId, request.Description, request.Price);
 
             //Encontra pedido
-            var orderId = ObjectId.Parse(request.OrderId.ToString());
-            var order = _orderRepository.GetOrder(orderId);
+            var order = _orderRepository.GetOrder(request.OrderId);
             if (order is null)
                 throw new Exception("Pedido não encontrado");
 
@@ -62,8 +61,7 @@ namespace Order.domain.Handlers
                 throw new Exception("Produto inválido");
 
             //Encontra pedido
-            var orderId = ObjectId.Parse(request.OrderId.ToString());
-            var order = _orderRepository.GetOrder(orderId);
+            var order = _orderRepository.GetOrder(request.OrderId);
             if (order is null)
                 throw new Exception("Pedido não encontrado");
 
