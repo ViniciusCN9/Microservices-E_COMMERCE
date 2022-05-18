@@ -1,0 +1,94 @@
+version: '3.8'
+
+volumes:
+  MySql:
+  MongoDb:
+
+
+networks:
+  mysqlNET:
+  mongoNET:
+  accessNET:
+  catalogNET:
+  orderNET:
+
+
+services:
+  mysql:
+    image: "mysql:8.0"
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - MySql:/var/lib/mysql
+    networks:
+      - mysqlNET
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+
+  mongodb:
+    image: mongo:5.0
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - MongoDb:/data/db
+    networks:
+      - mongoNET
+    restart: always
+
+  access:
+    build:
+      context: ./Access
+      dockerfile: Dockerfile
+    container_name: access_service
+    ports:
+      - 5000:80
+    networks:
+      - mysqlNET
+      - accessNET
+    restart: always
+    environment:
+      - DBHOST=mysql
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:DefaultConnection=server=mysql;port=3306;database=access;uid=root;password=root"
+    depends_on:
+      - mysql
+
+  catalog:
+    build:
+      context: ./Catalog
+      dockerfile: Dockerfile
+    container_name: catalog_service
+    ports:
+      - 5001:80
+    networks:
+      - mysqlNET
+      - catalogNET
+    restart: always
+    environment:
+      - DBHOST=mysql
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:DefaultConnection=server=mysql;port=3306;database=catalog;uid=root;password=root"
+    depends_on:
+      - mysql
+
+  order:
+    build:
+      context: ./Order
+      dockerfile: Dockerfile
+    container_name: order_service
+    ports:
+      - 5002:80
+    networks:
+      - mongoNET
+      - orderNET
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=mongodb://mongodb:27017"
+    restart: always
+    depends_on:
+      - mongodb
