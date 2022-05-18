@@ -1,23 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Order.domain.Handlers;
 using Order.domain.Interfaces;
 using Order.domain.Repositories;
-using Order.infra.Database.Config;
 using Order.infra.Database.Context;
 using Order.infra.Database.Repositories;
-using Order.infra.Interfaces;
 
 namespace Order.api
 {
@@ -39,9 +30,7 @@ namespace Order.api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order.api", Version = "v1" });
             });
 
-            var config = new ServerConfig();
-            Configuration.Bind(config);
-            var context = new ApplicationDbContext(config.MongoDB);
+            var context = new ApplicationDbContext(Configuration);
             var repository = new OrderRepository(context);
             services.AddSingleton<IOrderRepository>(repository);
             services.AddScoped<IHandler, Handler>();

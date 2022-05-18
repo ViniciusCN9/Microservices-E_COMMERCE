@@ -1,22 +1,11 @@
 version: '3.8'
 
-networks:
-  orderNET:
-
-
-volumes:
-  orderDb:
-
-
 services:
   database:
-    image: mongo
+    image: mongo:5.0
     container_name: order_database
     ports:
       - 27017:27017
-    volumes:
-      - orderDb:/data/db
-    restart: always
 
   order:
     build:
@@ -25,10 +14,9 @@ services:
     container_name: order_service
     ports:
       - 5002:80
-    networks:
-      - orderNET
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=mongodb://database:27017"
     depends_on:
       - database
