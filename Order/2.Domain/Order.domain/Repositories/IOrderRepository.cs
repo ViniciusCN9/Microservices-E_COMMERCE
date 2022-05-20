@@ -7,6 +7,7 @@ namespace Order.domain.Repositories
     {
         Requirement GetOrder(int id);
         void CreateOrder(Requirement requirement);
+        void UpdateOrder(int id, Requirement requirement);
         long GetNextId();
     }
 }

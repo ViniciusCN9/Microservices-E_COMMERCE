@@ -6,9 +6,9 @@ namespace Access.shared.Entities
     {
         public Entity()
         {
-            id = Guid.NewGuid();
+            Id = Guid.NewGuid().ToString();
         }
 
-        public Guid id { get; private set; }
+        public string Id { get; private set; }
     }
 }

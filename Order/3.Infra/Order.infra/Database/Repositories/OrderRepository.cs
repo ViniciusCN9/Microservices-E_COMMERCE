@@ -25,6 +25,11 @@ namespace Order.infra.Database.Repositories
             _context.Orders.InsertOneAsync(requirement);
         }
 
+        public void UpdateOrder(int id, Requirement requirement)
+        {
+            _context.Orders.ReplaceOneAsync(e => e.Id == id, requirement);
+        }
+
         public long GetNextId()
         {
             var countDocuments = _context.Orders.CountDocuments(new BsonDocument());

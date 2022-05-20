@@ -2,6 +2,7 @@ using System;
 using Catalog.domain.Commands;
 using Catalog.domain.Interfaces;
 using Catalog.domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,6 +53,7 @@ namespace Catalog.api.Controllers
         }
 
         [HttpPost("Create")]
+        [Authorize(Roles = "MANAGER")]
         public IActionResult CreateProduct([FromBody] CreateProductRequest request)
         {
             try

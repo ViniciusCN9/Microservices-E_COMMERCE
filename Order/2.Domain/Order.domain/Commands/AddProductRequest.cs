@@ -6,7 +6,5 @@ namespace Order.domain.Commands
     {
         public int OrderId { get; set; }
         public int ProductId { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
     }
 }

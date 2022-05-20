@@ -46,7 +46,7 @@ services:
       dockerfile: Dockerfile
     container_name: access_service
     ports:
-      - 5000:80
+      - 5001:80
     networks:
       - mysqlNET
       - accessNET
@@ -64,7 +64,7 @@ services:
       dockerfile: Dockerfile
     container_name: catalog_service
     ports:
-      - 5001:80
+      - 5002:80
     networks:
       - mysqlNET
       - catalogNET
@@ -82,7 +82,7 @@ services:
       dockerfile: Dockerfile
     container_name: order_service
     ports:
-      - 5002:80
+      - 5003:80
     networks:
       - mongoNET
       - orderNET
@@ -92,3 +92,22 @@ services:
     restart: always
     depends_on:
       - mongodb
+
+  gateway:
+    build:
+      context: ./Gateway
+      dockerfile: Dockerfile
+    container_name: gateway_service
+    ports:
+      - 5000:80
+    networks:
+      - accessNET
+      - catalogNET
+      - orderNET
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: always
+    depends_on:
+      - access
+      - catalog
+      - order

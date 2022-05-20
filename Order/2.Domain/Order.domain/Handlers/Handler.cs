@@ -10,10 +10,12 @@ namespace Order.domain.Handlers
     public class Handler : IHandler
     {
         private IOrderRepository _orderRepository;
+        private IProductRequest _productRequest;
 
-        public Handler(IOrderRepository orderRepository)
+        public Handler(IOrderRepository orderRepository, IProductRequest productRequest)
         {
             _orderRepository = orderRepository;
+            _productRequest = productRequest;
         }
 
         public CreateOrderResponse Handle(CreateOrderRequest request)
@@ -36,11 +38,19 @@ namespace Order.domain.Handlers
         public AddProductResponse Handle(AddProductRequest request)
         {
             //Validação
-            if (request.ProductId <= 0 || string.IsNullOrEmpty(request.Description) || request.Price == 0m)
+            if (request.ProductId <= 0)
                 throw new Exception("Produto inválido");
 
-            //Gera entidade
-            var product = new Product(request.ProductId, request.Description, request.Price);
+            //Busca Produto
+            Product product;
+            try
+            {
+                product = _productRequest.GetProduct(request.ProductId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
 
             //Encontra pedido
             var order = _orderRepository.GetOrder(request.OrderId);
@@ -49,6 +59,9 @@ namespace Order.domain.Handlers
 
             //Adiciona produto
             order.AddProduct(product);
+
+            //Atualiza banco de dados
+            _orderRepository.UpdateOrder(request.OrderId, order);
 
             //Retorna resposta
             return new AddProductResponse();
@@ -72,6 +85,9 @@ namespace Order.domain.Handlers
 
             //Remove produto
             order.RemoveProduct(product);
+
+            //Atualiza banco de dados
+            _orderRepository.UpdateOrder(request.OrderId, order);
 
             //Retorna resposta
             return new RemoveProductResponse();
