@@ -39,6 +39,7 @@
             ],
             "UpstreamPathTemplate": "/Catalog/{everything}",
             "UpstreamHttpMethod": [
+                "Get",
                 "Post"
             ]
         },
@@ -53,6 +54,7 @@
             ],
             "UpstreamPathTemplate": "/Order",
             "UpstreamHttpMethod": [
+                "Get",
                 "Post"
             ]
         },
@@ -61,12 +63,13 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "order",
                     "Port": 80
                 }
             ],
             "UpstreamPathTemplate": "/Order/{everything}",
             "UpstreamHttpMethod": [
+                "Get",
                 "Post"
             ]
         }

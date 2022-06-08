@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Order.domain.Entities;
 using Order.domain.Interfaces;
@@ -9,6 +10,13 @@ namespace Order.infra.HttpRequests
 {
     public class ProductRequest : IProductRequest
     {
+        public string Host;
+        public ProductRequest(IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("HostSettings");
+            Host = settings["Product"];
+        }
+
         public Product GetProduct(int id)
         {
             var client = new HttpClient();
@@ -16,7 +24,7 @@ namespace Order.infra.HttpRequests
             try
             {
                 var message = JsonConvert.SerializeObject(id);
-                var request = new HttpRequestMessage(HttpMethod.Get, $"http://localhost:5002/v1/Product/{id}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"http://{Host}/v1/Product/{id}");
                 request.Headers.Add("Accept", "application/json");
                 request.Content = new StringContent(message.ToString(), Encoding.UTF8, "application/json");
 

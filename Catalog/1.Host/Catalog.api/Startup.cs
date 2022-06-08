@@ -64,6 +64,11 @@ namespace Catalog.api
 
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IHandler, ProductHandler>();
+
+            services.AddCors(c =>
+            {
+                c.AddDefaultPolicy(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -76,6 +81,8 @@ namespace Catalog.api
             }
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

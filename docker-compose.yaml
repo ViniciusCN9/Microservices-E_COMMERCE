@@ -86,9 +86,11 @@ services:
     networks:
       - mongoNET
       - orderNET
+      - catalogNET
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings:ConnectionString=mongodb://mongodb:27017"
+      - "HostSettings:Product=catalog:80"
     restart: always
     depends_on:
       - mongodb

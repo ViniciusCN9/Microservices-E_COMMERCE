@@ -55,8 +55,16 @@ namespace Order.api
             var context = new ApplicationDbContext(Configuration);
             var repository = new OrderRepository(context);
             services.AddSingleton<IOrderRepository>(repository);
+
+            var productRequest = new ProductRequest(Configuration);
+            services.AddSingleton<IProductRequest>(productRequest);
+
             services.AddScoped<IHandler, Handler>();
-            services.AddScoped<IProductRequest, ProductRequest>();
+
+            services.AddCors(c =>
+            {
+                c.AddDefaultPolicy(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -69,6 +77,8 @@ namespace Order.api
             }
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -45,6 +45,11 @@ namespace Access.api
             services.AddScoped<ICommandHandler, RegisterHandler>();
             services.AddScoped<IQueryHandler, LoginHandler>();
             services.AddScoped<ITokenService, TokenService>();
+
+            services.AddCors(c =>
+            {
+                c.AddDefaultPolicy(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -57,6 +62,8 @@ namespace Access.api
             }
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

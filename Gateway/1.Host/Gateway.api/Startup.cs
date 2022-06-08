@@ -25,6 +25,11 @@ namespace Gateway.api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOcelot(_configuration);
+
+            services.AddCors(c =>
+            {
+                c.AddDefaultPolicy(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -33,6 +38,8 @@ namespace Gateway.api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors();
 
             app.UseOcelot().Wait();
         }

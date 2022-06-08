@@ -31,8 +31,12 @@ namespace Order.domain.Handlers
             //Salva informação
             _orderRepository.CreateOrder(order);
 
+            //Cria resposta
+            var response = new CreateOrderResponse();
+            response.OrderId = id;
+
             //Retorna resposta
-            return new CreateOrderResponse();
+            return response;
         }
 
         public AddProductResponse Handle(AddProductRequest request)
