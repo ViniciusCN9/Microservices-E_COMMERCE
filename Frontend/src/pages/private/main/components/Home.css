@@ -1,0 +1,42 @@
+.home {
+    flex: 10;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas:
+        'a . b'
+        '. c .'
+        'd . e';
+    gap: 10px;
+}
+
+.home p {
+    background-color: #c5e8da;
+    font-size: 1rem;
+    padding: 0.5rem;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+
+.home :nth-child(1) {
+    grid-area: a;
+}
+
+.home :nth-child(2) {
+    grid-area: b;
+}
+
+.home :nth-child(3) {
+    grid-area: c;
+}
+
+.home :nth-child(4) {
+    grid-area: d;
+}
+
+.home :nth-child(5) {
+    grid-area: e;
+}

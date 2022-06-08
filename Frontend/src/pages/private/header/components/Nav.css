@@ -1,0 +1,22 @@
+.nav {
+    flex: 2;
+    display: flex;
+    justify-content: space-around;
+}
+
+.nav a {
+    color: #C5E8DA;
+    font-size: 2rem;
+}
+
+.nav a:hover {
+    color: white;
+}
+
+.nav .selected {
+    color: #77AD73;
+}
+
+.nav .selected:hover {
+    color: #77AD73;
+}

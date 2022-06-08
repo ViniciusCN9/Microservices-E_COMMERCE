@@ -1,0 +1,7 @@
+.allow-any {
+    background-color: #c5e8da;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

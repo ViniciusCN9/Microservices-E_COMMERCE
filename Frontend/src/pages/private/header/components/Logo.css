@@ -1,0 +1,9 @@
+.logo {
+    flex: 1;
+}
+
+.logo h1 {
+    color: white;
+    font-size: 4rem;
+    margin: 0;
+}

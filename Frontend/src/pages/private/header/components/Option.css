@@ -1,0 +1,13 @@
+.option {
+    flex: 1;
+    text-align: end;
+}
+
+.option a {
+    color: white;
+    font-size: 2rem;
+}
+
+.option a:hover {
+    color: darkgrey;
+}
