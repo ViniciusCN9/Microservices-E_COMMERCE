@@ -8,6 +8,7 @@ namespace Order.domain.Repositories
         Requirement GetOrder(int id, string username);
         void CreateOrder(Requirement requirement);
         void UpdateOrder(int id, Requirement requirement);
+        bool VerifyOrder(string username);
         long GetNextId();
     }
 }

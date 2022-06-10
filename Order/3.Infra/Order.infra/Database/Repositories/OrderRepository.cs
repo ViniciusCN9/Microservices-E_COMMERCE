@@ -21,6 +21,15 @@ namespace Order.infra.Database.Repositories
 
         }
 
+        public bool VerifyOrder(string username)
+        {
+            var order = _context.Orders.Find(e => e.Username == username && e.IsActive == true).FirstOrDefault();
+            if (order is null)
+                return false;
+
+            return true;
+        }
+
         public void CreateOrder(Requirement requirement)
         {
             _context.Orders.InsertOneAsync(requirement);

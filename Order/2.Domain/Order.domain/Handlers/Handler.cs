@@ -24,6 +24,11 @@ namespace Order.domain.Handlers
             if (string.IsNullOrEmpty(request.Username))
                 throw new Exception("Usuário inválido");
 
+            //Valida se já existe pedido ativo
+            var activeOrder = _orderRepository.VerifyOrder(request.Username);
+            if (activeOrder)
+                throw new Exception("Já existe pedido ativo");
+
             //Gera entidade
             var id = _orderRepository.GetNextId();
             var order = new Requirement(request.Username, id);
