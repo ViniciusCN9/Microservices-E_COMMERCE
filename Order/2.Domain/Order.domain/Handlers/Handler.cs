@@ -25,23 +25,18 @@ namespace Order.domain.Handlers
                 throw new Exception("Usuário inválido");
 
             //Valida se já existe pedido ativo
-            var activeOrder = _orderRepository.VerifyOrder(request.Username);
-            if (activeOrder)
+            var activeOrder = _orderRepository.GetOrder(request.Username);
+            if (activeOrder != null)
                 throw new Exception("Já existe pedido ativo");
 
             //Gera entidade
-            var id = _orderRepository.GetNextId();
-            var order = new Requirement(request.Username, id);
+            var order = new Requirement(request.Username);
 
             //Salva informação
             _orderRepository.CreateOrder(order);
 
-            //Cria resposta
-            var response = new CreateOrderResponse();
-            response.OrderId = id;
-
             //Retorna resposta
-            return response;
+            return new CreateOrderResponse(); ;
         }
 
         public AddProductResponse Handle(AddProductRequest request, string username)
@@ -62,7 +57,7 @@ namespace Order.domain.Handlers
             }
 
             //Encontra pedido
-            var order = _orderRepository.GetOrder(request.OrderId, username);
+            var order = _orderRepository.GetOrder(username);
             if (order is null)
                 throw new Exception("Pedido não encontrado");
 
@@ -70,7 +65,7 @@ namespace Order.domain.Handlers
             order.AddProduct(product);
 
             //Atualiza banco de dados
-            _orderRepository.UpdateOrder(request.OrderId, order);
+            _orderRepository.UpdateOrder(username, order);
 
             //Retorna resposta
             return new AddProductResponse();
@@ -79,11 +74,11 @@ namespace Order.domain.Handlers
         public RemoveProductResponse Handle(RemoveProductRequest request, string username)
         {
             //Validação
-            if (request.OrderId <= 0 || request.ProductId <= 0)
+            if (request.ProductId <= 0)
                 throw new Exception("Produto inválido");
 
             //Encontra pedido
-            var order = _orderRepository.GetOrder(request.OrderId, username);
+            var order = _orderRepository.GetOrder(username);
             if (order is null)
                 throw new Exception("Pedido não encontrado");
 
@@ -96,20 +91,16 @@ namespace Order.domain.Handlers
             order.RemoveProduct(product);
 
             //Atualiza banco de dados
-            _orderRepository.UpdateOrder(request.OrderId, order);
+            _orderRepository.UpdateOrder(username, order);
 
             //Retorna resposta
             return new RemoveProductResponse();
         }
 
-        public FinishOrderResponse Handle(FinishOrderRequest request, string username)
+        public FinishOrderResponse Handle(string username)
         {
-            //Validação
-            if (request.OrderId <= 0)
-                throw new Exception("Pedido inválido");
-
             //Encontra pedido
-            var order = _orderRepository.GetOrder(request.OrderId, username);
+            var order = _orderRepository.GetOrder(username);
             if (order is null)
                 throw new Exception("Pedido não encontrado");
 
@@ -117,7 +108,7 @@ namespace Order.domain.Handlers
             order.FinishOrder();
 
             //Atualiza banco de dados
-            _orderRepository.UpdateOrder(request.OrderId, order);
+            _orderRepository.UpdateOrder(username, order);
 
             return new FinishOrderResponse();
         }

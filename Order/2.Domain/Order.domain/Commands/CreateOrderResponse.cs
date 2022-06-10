@@ -2,6 +2,6 @@ namespace Order.domain.Commands
 {
     public class CreateOrderResponse
     {
-        public long OrderId { get; set; }
+        public string Response { get; set; } = "Pedido criado com sucesso";
     }
 }

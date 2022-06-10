@@ -8,7 +8,7 @@ namespace Order.domain.Entities
 {
     public class Requirement : Entity
     {
-        public Requirement(string username, long id) : base(id)
+        public Requirement(string username)
         {
             Username = username;
             TotalValue = 0m;

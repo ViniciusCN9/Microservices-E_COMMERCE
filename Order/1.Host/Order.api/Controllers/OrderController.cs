@@ -22,16 +22,13 @@ namespace Order.api.Controllers
             _orderRepository = orderRepository;
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult GetOrder([FromRoute] int id)
+        [HttpGet()]
+        public IActionResult GetOrder()
         {
-            if (id < 0)
-                return BadRequest();
-
             try
             {
                 var username = User.Claims.First().Value;
-                var response = _orderRepository.GetOrder(id, username);
+                var response = _orderRepository.GetOrder(username);
                 return Ok(response);
             }
             catch (Exception e)
@@ -86,12 +83,12 @@ namespace Order.api.Controllers
         }
 
         [HttpPost("Finish")]
-        public IActionResult FinishOrder([FromBody] FinishOrderRequest request)
+        public IActionResult FinishOrder()
         {
             try
             {
                 var username = User.Claims.First().Value;
-                var response = _handler.Handle(request, username);
+                var response = _handler.Handle(username);
                 return Ok(response);
             }
             catch (Exception e)

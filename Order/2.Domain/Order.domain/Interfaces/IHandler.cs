@@ -7,6 +7,6 @@ namespace Order.domain.Interfaces
         CreateOrderResponse Handle(CreateOrderRequest request);
         AddProductResponse Handle(AddProductRequest request, string username);
         RemoveProductResponse Handle(RemoveProductRequest request, string username);
-        FinishOrderResponse Handle(FinishOrderRequest request, string username);
+        FinishOrderResponse Handle(string username);
     }
 }

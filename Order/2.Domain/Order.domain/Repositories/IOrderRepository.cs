@@ -5,10 +5,8 @@ namespace Order.domain.Repositories
 {
     public interface IOrderRepository
     {
-        Requirement GetOrder(int id, string username);
+        Requirement GetOrder(string username);
         void CreateOrder(Requirement requirement);
-        void UpdateOrder(int id, Requirement requirement);
-        bool VerifyOrder(string username);
-        long GetNextId();
+        void UpdateOrder(string username, Requirement requirement);
     }
 }
