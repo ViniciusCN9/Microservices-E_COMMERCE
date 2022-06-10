@@ -36,7 +36,7 @@ namespace Access.domain.Queries.Handlers
             var token = _tokenService.GenerateToken(user);
 
             //Retorna resposta
-            return new LoginResponse() { Token = token };
+            return new LoginResponse() { Username = user.Username, Role = user.Role, Token = token };
         }
     }
 }
