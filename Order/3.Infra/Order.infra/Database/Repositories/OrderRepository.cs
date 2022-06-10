@@ -15,9 +15,10 @@ namespace Order.infra.Database.Repositories
             _context = context;
         }
 
-        public Requirement GetOrder(int id)
+        public Requirement GetOrder(int id, string username)
         {
-            return _context.Orders.Find(e => e.Id == id).FirstOrDefault();
+            return _context.Orders.Find(e => e.Id == id && e.Username == username && e.IsActive == true).FirstOrDefault();
+
         }
 
         public void CreateOrder(Requirement requirement)

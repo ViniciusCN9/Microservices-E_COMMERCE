@@ -14,12 +14,14 @@ namespace Order.domain.Entities
             TotalValue = 0m;
             Products = new List<Product>();
             ExpeditionDate = DateTime.Now;
+            IsActive = true;
         }
 
         public string Username { get; private set; }
         public decimal TotalValue { get; private set; }
         public List<Product> Products { get; private set; }
         public DateTime ExpeditionDate { get; private set; }
+        public bool IsActive { get; private set; }
 
         public void AddProduct(Product product)
         {
@@ -39,6 +41,11 @@ namespace Order.domain.Entities
             if (product is null)
                 return false;
             return true;
+        }
+
+        public void FinishOrder()
+        {
+            IsActive = false;
         }
     }
 }

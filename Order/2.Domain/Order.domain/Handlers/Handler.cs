@@ -39,7 +39,7 @@ namespace Order.domain.Handlers
             return response;
         }
 
-        public AddProductResponse Handle(AddProductRequest request)
+        public AddProductResponse Handle(AddProductRequest request, string username)
         {
             //Validação
             if (request.ProductId <= 0)
@@ -57,7 +57,7 @@ namespace Order.domain.Handlers
             }
 
             //Encontra pedido
-            var order = _orderRepository.GetOrder(request.OrderId);
+            var order = _orderRepository.GetOrder(request.OrderId, username);
             if (order is null)
                 throw new Exception("Pedido não encontrado");
 
@@ -71,14 +71,14 @@ namespace Order.domain.Handlers
             return new AddProductResponse();
         }
 
-        public RemoveProductResponse Handle(RemoveProductRequest request)
+        public RemoveProductResponse Handle(RemoveProductRequest request, string username)
         {
             //Validação
             if (request.OrderId <= 0 || request.ProductId <= 0)
                 throw new Exception("Produto inválido");
 
             //Encontra pedido
-            var order = _orderRepository.GetOrder(request.OrderId);
+            var order = _orderRepository.GetOrder(request.OrderId, username);
             if (order is null)
                 throw new Exception("Pedido não encontrado");
 
@@ -95,6 +95,26 @@ namespace Order.domain.Handlers
 
             //Retorna resposta
             return new RemoveProductResponse();
+        }
+
+        public FinishOrderResponse Handle(FinishOrderRequest request, string username)
+        {
+            //Validação
+            if (request.OrderId <= 0)
+                throw new Exception("Pedido inválido");
+
+            //Encontra pedido
+            var order = _orderRepository.GetOrder(request.OrderId, username);
+            if (order is null)
+                throw new Exception("Pedido não encontrado");
+
+            //Finaliza pedido
+            order.FinishOrder();
+
+            //Atualiza banco de dados
+            _orderRepository.UpdateOrder(request.OrderId, order);
+
+            return new FinishOrderResponse();
         }
     }
 }

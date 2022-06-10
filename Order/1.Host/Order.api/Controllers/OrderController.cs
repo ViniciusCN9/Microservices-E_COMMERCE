@@ -30,7 +30,8 @@ namespace Order.api.Controllers
 
             try
             {
-                var response = _orderRepository.GetOrder(id);
+                var username = User.Claims.First().Value;
+                var response = _orderRepository.GetOrder(id, username);
                 return Ok(response);
             }
             catch (Exception e)
@@ -59,7 +60,8 @@ namespace Order.api.Controllers
         {
             try
             {
-                var response = _handler.Handle(request);
+                var username = User.Claims.First().Value;
+                var response = _handler.Handle(request, username);
                 return Ok(response);
             }
             catch (Exception e)
@@ -73,7 +75,23 @@ namespace Order.api.Controllers
         {
             try
             {
-                var response = _handler.Handle(request);
+                var username = User.Claims.First().Value;
+                var response = _handler.Handle(request, username);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("Finish")]
+        public IActionResult FinishOrder([FromBody] FinishOrderRequest request)
+        {
+            try
+            {
+                var username = User.Claims.First().Value;
+                var response = _handler.Handle(request, username);
                 return Ok(response);
             }
             catch (Exception e)
