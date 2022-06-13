@@ -11,6 +11,7 @@ networks:
   accessNET:
   catalogNET:
   orderNET:
+  gatewayNET:
 
 
 services:
@@ -113,3 +114,22 @@ services:
       - access
       - catalog
       - order
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: frontend_service
+    ports:
+      - 3000:3000
+    networks:
+      - gatewayNET
+    volumes:
+      - './:/app'
+      - '/app/node_modules'
+    depends_on:
+      - gateway
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    command: npm start
