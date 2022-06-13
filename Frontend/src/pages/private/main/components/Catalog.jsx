@@ -71,19 +71,19 @@ function Catalog() {
     }
 
     async function addOnOrder(productId) {
-        let orderId = localStorage.getItem("orderId")
-        if (!orderId) {
-            await axios.post(ORDER_URL, {}, config)
-                .then(response => {
-                    localStorage.setItem("orderId", response.data.orderId)
-                    orderId = localStorage.getItem("orderId")
-                })
-        }
-
-        const body = { orderId: parseInt(orderId), productId: productId }
-        axios.post(`${ORDER_URL}/Add`, JSON.stringify(body), config)
-            .then(response => alert(response.data.response))
-            .catch(error => error.response.data)
+        axios.get(ORDER_URL, config)
+            .then(response => {
+                if (response.data) {
+                    const body = { productId: productId }
+                    axios.post(`${ORDER_URL}/Add`, JSON.stringify(body), config)
+                        .then(response => alert(response.data.response))
+                        .catch(error => console.log(error.response.data))
+                } else {
+                    axios.post(ORDER_URL, {}, config)
+                        .then(() => addOnOrder(productId))
+                        .catch(error => console.log(error.response.data))
+                }
+            }).catch(error => console.log(error.response.data))
     }
 
     const [description, setDescription] = useState("")

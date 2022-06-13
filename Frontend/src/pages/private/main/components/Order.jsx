@@ -16,29 +16,29 @@ function Order() {
 
     useEffect(() => {
         setUrl(window.location.href)
-        if (localStorage.getItem("orderId") === null) {
-            document.getElementById("check-out").setAttribute("disabled", "")
-            return
-        }
 
-        axios.get(`${ORDER_URL}/${localStorage.getItem("orderId")}`, config)
+        axios.get(ORDER_URL, config)
             .then(response => {
-                let products = []
+                if (response.data) {
+                    let products = []
 
-                response.data.products.forEach(item => {
-                    products.push({
-                        productId: item.id,
-                        product: item.description,
-                        price: item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 })
+                    response.data.products.forEach(item => {
+                        products.push({
+                            productId: item.id,
+                            product: item.description,
+                            price: item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 })
+                        })
                     })
-                })
 
-                if (products.length < 1) {
+                    if (products.length < 1) {
+                        document.getElementById("check-out").setAttribute("disabled", "")
+                    }
+
+                    setData(products)
+                    setTotal(response.data.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }))
+                } else {
                     document.getElementById("check-out").setAttribute("disabled", "")
                 }
-
-                setData(products)
-                setTotal(response.data.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }))
             })
     }, [total])
 
@@ -60,9 +60,7 @@ function Order() {
     ]
 
     function removeProduct(productId) {
-        const orderId = localStorage.getItem("orderId")
-
-        const body = { orderId: parseInt(orderId), productId: productId }
+        const body = { productId: productId }
         axios.post(`${ORDER_URL}/Remove`, JSON.stringify(body), config)
             .then(response => alert(response.data.response))
             .catch(error => error.response.data)
@@ -71,8 +69,9 @@ function Order() {
     }
 
     function checkOut() {
-        localStorage.removeItem("orderId")
-        alert("Pedido realizado com sucesso")
+        axios.post(`${ORDER_URL}/Finish`, {}, config)
+            .then(response => alert(response.data.response))
+            .catch(error => alert(error.response.data))
         document.location.reload()
     }
 
