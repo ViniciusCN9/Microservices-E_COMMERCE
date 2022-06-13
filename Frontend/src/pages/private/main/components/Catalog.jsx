@@ -3,11 +3,18 @@ import React, { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import DataTable from 'react-data-table-component';
 import axios from "../../../../api/axios";
+import useAuth from "../../../../hooks/useAuth";
 
 const CATALOG_URL = "/Catalog"
 const ORDER_URL = "/Order"
 
 function Catalog() {
+    const role = localStorage.getItem("role")
+
+    const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    }
+
     const setUrl = useOutletContext();
     const [data, setData] = useState([])
 
@@ -64,10 +71,6 @@ function Catalog() {
     }
 
     async function addOnOrder(productId) {
-        const config = {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-        }
-
         let orderId = localStorage.getItem("orderId")
         if (!orderId) {
             await axios.post(ORDER_URL, {}, config)
@@ -83,13 +86,81 @@ function Catalog() {
             .catch(error => error.response.data)
     }
 
+    const [description, setDescription] = useState("")
+    const [price, setPrice] = useState("")
+    const [category, setCategory] = useState("")
+
+    function handleSubmit(e) {
+        e.preventDefault()
+
+        const body = { description: description.toUpperCase(), price: parseFloat(price), category: parseInt(category) }
+        axios.post(`${CATALOG_URL}/Create`, JSON.stringify(body), config)
+            .then(response => console.log(response.data))
+            .catch(error => console.log(error.response.data))
+
+        document.location.reload()
+    }
+
+    function cancelAdd(e) {
+        e.preventDefault()
+
+        setDescription("")
+        setPrice("")
+        setCategory("")
+    }
+
+    if (role == 0) {
+        return (
+            < div className="catalog-admin" >
+                <form className="form-catalog" onSubmit={handleSubmit}>
+                    <div className="field-catalog">
+                        <div className="field-description">
+                            <label htmlFor="description">Description</label>
+                            <input
+                                type="description"
+                                name="description"
+                                id="description"
+                                value={description}
+                                onChange={e => setDescription(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="field-price">
+                            <label htmlFor="price">Price</label>
+                            <input
+                                type="price"
+                                name="price"
+                                id="price"
+                                value={price}
+                                onChange={e => setPrice(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <select value={category} onChange={e => setCategory(e.target.value)} name="category">
+                            <option disabled value="">Category</option>
+                            <option value="1">Notebook</option>
+                            <option value="2">Desktop</option>
+                            <option value="3">Mobile</option>
+                        </select>
+                    </div>
+                    <div className="actions-catalog">
+                        <button type="submit">Add</button>
+                        <button onClick={e => cancelAdd(e)}>Cancel</button>
+                    </div>
+                </form>
+                <div className="table-admin">
+                    <DataTable columns={columns} data={data} theme={"custom"} pagination />
+                </div>
+            </div >
+        )
+    }
 
     return (
-        <div className="catalog">
+        < div className="catalog" >
             <div className="table">
                 <DataTable columns={columns} data={data} theme={"custom"} highlightOnHover pointerOnHover onRowClicked={(row) => addOnOrder(row.id)} pagination />
             </div>
-        </div>
+        </div >
     )
 }
 

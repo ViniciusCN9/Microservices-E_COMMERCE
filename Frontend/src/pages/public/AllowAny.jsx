@@ -3,7 +3,7 @@ import React from "react";
 import { Outlet } from "react-router-dom"
 
 function AllowAny() {
-    localStorage.removeItem("token")
+    localStorage.clear()
     return (
         <main className="allow-any">
             <Outlet />

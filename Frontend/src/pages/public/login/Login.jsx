@@ -7,7 +7,7 @@ import useAuth from "../../../hooks/useAuth";
 const LOGIN_URL = "/Access/Login"
 
 function Login() {
-    const { authenticate } = useAuth()
+    const { authenticate, authorize } = useAuth()
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -27,6 +27,7 @@ function Login() {
         axios.post(LOGIN_URL, JSON.stringify({ username, password }), { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 authenticate(response.data.token)
+                authorize(response.data.role, response.data.username)
                 navigate(from, { replace: true })
             })
             .catch(error => setError(error.response.data))
