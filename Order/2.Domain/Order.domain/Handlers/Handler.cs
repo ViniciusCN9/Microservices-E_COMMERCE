@@ -106,6 +106,8 @@ namespace Order.domain.Handlers
 
             //Finaliza pedido
             order.FinishOrder();
+            if (order.IsActive)
+                throw new Exception("Pedido não pode ser finalizado pois está vazio");
 
             //Atualiza banco de dados
             _orderRepository.UpdateOrder(username, order);

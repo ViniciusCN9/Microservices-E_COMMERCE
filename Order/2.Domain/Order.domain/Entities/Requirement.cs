@@ -45,7 +45,8 @@ namespace Order.domain.Entities
 
         public void FinishOrder()
         {
-            IsActive = false;
+            if (Products.Any())
+                IsActive = false;
         }
     }
 }
